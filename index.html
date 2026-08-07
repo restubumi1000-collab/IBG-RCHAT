@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IBG RCHAT</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section id="loginView" class="card login-card">
+      <div class="brand">
+        <div class="logo">IBG</div>
+        <div>
+          <h1>IBG RCHAT</h1>
+          <p>Private room chat</p>
+        </div>
+      </div>
+
+      <form id="loginForm" class="form">
+        <label>
+          ID
+          <input id="userId" type="text" autocomplete="username" placeholder="contoh: restu" required />
+        </label>
+
+        <label>
+          Password
+          <input id="password" type="password" autocomplete="current-password" placeholder="Password" required />
+        </label>
+
+        <button type="submit">Masuk</button>
+        <p id="loginError" class="error"></p>
+      </form>
+    </section>
+
+    <section id="chatView" class="chat-card hidden">
+      <header class="chat-header">
+        <div>
+          <h2>IBG RCHAT</h2>
+          <p id="currentUserLabel">Online</p>
+        </div>
+        <button id="logoutBtn" class="secondary">Logout</button>
+      </header>
+
+      <div id="messages" class="messages"></div>
+
+      <form id="messageForm" class="message-form">
+        <input id="messageInput" type="text" maxlength="1000" autocomplete="off" placeholder="Tulis pesan..." required />
+        <button type="submit">Kirim</button>
+      </form>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
