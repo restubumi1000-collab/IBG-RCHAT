@@ -25,17 +25,22 @@ const firebaseConfig = {
   appId: "1:623766599069:web:651edb5f6dcbb6bdb8ab74"
 };
 
-// Semua user baru cukup dibuat di Firebase Authentication memakai format:
-// ID "afu" -> email Firebase "afu@users.ibgrchat.app"
-// Pengguna di halaman web tetap hanya mengetik ID + password.
-const USER_EMAIL_DOMAIN = "users.ibgrchat.app";
-
-// Kompatibilitas akun lama. Alias dapat menunjuk ke akun Firebase lama yang sama.
+// Akun lama tetap bisa dipakai tanpa perlu diubah di Firebase.
 const LEGACY_USERS = {
-  restu: { email: "restubumi1000@gmail.com", name: "Restu" },
-  ibong: { email: "restubumi1000@gmail.com", name: "Ibong" },
-  susi: { email: "susiyulianti130697@gmail.com", name: "Susi" }
+  restu: {
+    email: "restubumi1000@gmail.com",
+    name: "Restu"
+  },
+  susi: {
+    email: "susiyulianti130697@gmail.com",
+    name: "Susi"
+  }
 };
+
+// User baru dibuat di Firebase Authentication dengan pola email berikut:
+// ID: andi  -> email Firebase: andi@users.ibgrchat.app
+// Di halaman chat, user tetap hanya mengetik ID "andi" + password.
+const USER_EMAIL_DOMAIN = "users.ibgrchat.app";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -55,41 +60,51 @@ const currentUserLabel = document.getElementById("currentUserLabel");
 
 let unsubscribeMessages = null;
 
-function normalizeId(value = "") {
-  return value.trim().toLowerCase().replace(/[^a-z0-9._-]/g, "");
+function normalizeId(id) {
+  return id.trim().toLowerCase().replace(/[^a-z0-9._-]/g, "");
 }
 
-function emailForId(id) {
+function idToFirebaseEmail(id) {
   const normalizedId = normalizeId(id);
   if (!normalizedId) return "";
-  return LEGACY_USERS[normalizedId]?.email || `${normalizedId}@${USER_EMAIL_DOMAIN}`;
+
+  // Pertahankan akun lama Restu/Susi.
+  if (LEGACY_USERS[normalizedId]) {
+    return LEGACY_USERS[normalizedId].email;
+  }
+
+  return `${normalizedId}@${USER_EMAIL_DOMAIN}`;
 }
 
-function identityFromEmail(email = "") {
+function getIdentityFromEmail(email = "") {
   const normalizedEmail = email.trim().toLowerCase();
 
-  // Jika email adalah akun lama, gunakan nama default akun lama.
-  // Karena Restu dan Ibong menunjuk email sama, pilih Ibong untuk tampilan utama.
-  if (normalizedEmail === "restubumi1000@gmail.com") {
-    return { id: "ibong", name: "Ibong" };
-  }
-  if (normalizedEmail === "susiyulianti130697@gmail.com") {
-    return { id: "susi", name: "Susi" };
+  const legacyEntry = Object.entries(LEGACY_USERS).find(
+    ([, value]) => value.email.toLowerCase() === normalizedEmail
+  );
+
+  if (legacyEntry) {
+    const [id, value] = legacyEntry;
+    return { id, name: value.name };
   }
 
   const suffix = `@${USER_EMAIL_DOMAIN}`;
   if (normalizedEmail.endsWith(suffix)) {
     const id = normalizedEmail.slice(0, -suffix.length);
-    return { id, name: id };
+    return {
+      id,
+      name: id
+    };
   }
 
+  // Fallback jika ada akun Firebase lain.
   const fallbackId = normalizedEmail.split("@")[0] || "user";
   return { id: fallbackId, name: fallbackId };
 }
 
-function displayName(identity) {
-  const name = identity?.name || "User";
-  return name.charAt(0).toUpperCase() + name.slice(1);
+function formatDisplayName(identity) {
+  if (!identity?.name) return "User";
+  return identity.name.charAt(0).toUpperCase() + identity.name.slice(1);
 }
 
 function formatTime(timestamp) {
@@ -102,6 +117,7 @@ function formatTime(timestamp) {
 
 function renderMessage(docSnap, currentUid) {
   const data = docSnap.data();
+
   const item = document.createElement("div");
   item.className = `message ${data.uid === currentUid ? "mine" : "other"}`;
 
@@ -153,19 +169,14 @@ loginForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (!password) {
-    loginError.textContent = "Masukkan password.";
-    return;
-  }
-
-  const email = emailForId(id);
+  const email = idToFirebaseEmail(id);
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
     loginForm.reset();
   } catch (error) {
-    console.error("Login error:", error.code, error.message, "email:", email);
-    loginError.textContent = "ID atau password salah. Pastikan user sudah dibuat di Firebase Authentication.";
+    console.error("Login error:", error.code, error.message);
+    loginError.textContent = "ID atau password salah.";
   }
 });
 
@@ -174,14 +185,16 @@ messageForm.addEventListener("submit", async (event) => {
 
   const user = auth.currentUser;
   const text = messageInput.value.trim();
+
   if (!user || !text) return;
 
-  const identity = identityFromEmail(user.email || "");
+  const identity = getIdentityFromEmail(user.email || "");
+  const sender = formatDisplayName(identity);
 
   try {
     await addDoc(collection(db, "messages"), {
       text,
-      sender: displayName(identity),
+      sender,
       uid: user.uid,
       createdAt: serverTimestamp()
     });
@@ -200,10 +213,11 @@ logoutBtn.addEventListener("click", async () => {
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    const identity = identityFromEmail(user.email || "");
+    const identity = getIdentityFromEmail(user.email || "");
+
     loginView.classList.add("hidden");
     chatView.classList.remove("hidden");
-    currentUserLabel.textContent = `Login sebagai ${displayName(identity)}`;
+    currentUserLabel.textContent = `Login sebagai ${formatDisplayName(identity)}`;
     listenToMessages(user);
   } else {
     chatView.classList.add("hidden");
