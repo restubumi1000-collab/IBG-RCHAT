@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>NICCA Connect+</title>
+  <link rel="stylesheet" href="style.css?v=6" />
+</head>
+<body>
+  <main class="app-shell">
+    <section id="loginView" class="card login-card">
+      <div class="brand">
+        <div class="logo">N+</div>
+        <div>
+          <h1>NICCA Connect+</h1>
+          <p>Connect • Communicate • Collaborate</p>
+        </div>
+      </div>
+
+      <form id="loginForm" class="form">
+        <label>
+          ID
+          <input id="userId" type="text" autocomplete="username" placeholder="Masukkan ID" required />
+        </label>
+
+        <label>
+          Password
+          <input id="password" type="password" autocomplete="current-password" placeholder="Password" required />
+        </label>
+
+        <button type="submit">Masuk</button>
+        <p id="loginError" class="error"></p>
+      </form>
+    </section>
+
+    <section id="chatView" class="chat-card hidden">
+      <header class="chat-header">
+        <div>
+          <h2>NICCA Connect+</h2>
+          <p id="currentUserLabel">Online</p>
+        </div>
+        <button id="logoutBtn" class="secondary">Logout</button>
+      </header>
+
+      <div id="messages" class="messages"></div>
+
+      <form id="messageForm" class="message-form">
+        <input id="messageInput" type="text" maxlength="1000" autocomplete="off" placeholder="Tulis pesan..." required />
+        <button type="submit">Kirim</button>
+      </form>
+    </section>
+  </main>
+
+  <script type="module" src="app.js?v=6"></script>
+</body>
+</html>
