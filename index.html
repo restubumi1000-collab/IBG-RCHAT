@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#078a72" />
+  <title>NICCA Connect+</title>
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="style.css?v=7" />
+</head>
+<body>
+  <main class="app-shell">
+    <section id="loginView" class="login-screen">
+      <div class="login-panel">
+        <div class="brand-lockup">
+          <img class="brand-logo" src="nicca-logo.png" alt="NICCA" />
+          <h1>NICCA Connect+</h1>
+          <p>Connect <span>•</span> Communicate <span>•</span> Collaborate</p>
+        </div>
+
+        <form id="loginForm" class="login-form">
+          <label class="field">
+            <span class="field-icon">●</span>
+            <input id="userId" type="text" autocomplete="username" placeholder="User ID" required />
+          </label>
+
+          <label class="field">
+            <span class="field-icon lock">▣</span>
+            <input id="password" type="password" autocomplete="current-password" placeholder="Password" required />
+            <button id="togglePassword" class="eye-btn" type="button" aria-label="Tampilkan password">◉</button>
+          </label>
+
+          <button class="login-btn" type="submit">
+            <span class="login-arrow">↪</span>
+            LOGIN
+          </button>
+
+          <p id="loginError" class="error"></p>
+
+          <div class="secure-note">
+            <div><span></span> Secure Login <span></span></div>
+            <p>◆ &nbsp; Encrypted & Secure</p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="chatView" class="chat-card hidden">
+      <header class="app-header">
+        <div class="header-brand"><img src="nicca-logo.png" alt="" /><div><h2>NICCA Connect+</h2><p>Connect • Communicate • Collaborate</p></div></div>
+        <button id="logoutBtn" class="icon-button" type="button" aria-label="Logout">↪</button>
+      </header>
+
+      <div class="app-content">
+        <section id="chatPanel" class="view-panel">
+          <section class="room-header"><div class="room-icon">👥</div><div class="room-copy"><h3>General Chat</h3><p><span class="online-dot"></span><span id="currentUserLabel">Online</span></p></div><div class="room-info">ⓘ</div></section>
+          <div id="messages" class="messages"></div>
+          <form id="messageForm" class="message-form"><button class="composer-icon" type="button">☺</button><input id="messageInput" type="text" maxlength="1000" autocomplete="off" placeholder="Type a message..." required /><button class="composer-icon attachment-button" type="button">⌕</button><button class="send-button" type="submit">➤</button></form>
+        </section>
+
+        <section id="kpiPanel" class="view-panel kpi-page hidden">
+          <div class="page-title"><div><h3>My KPI</h3><div id="kpiAsOf" class="muted">Total sampai hari ini</div></div></div>
+          <div class="kpi-grid">
+            <button id="kaizenCard" class="kpi-card clickable"><span class="label">💡 Kaizen</span><strong id="kpiKaizen">0</strong><small>Lihat judul ›</small></button>
+            <div class="kpi-card"><span class="label">🚫 Alpha</span><strong id="kpiAlpha">0</strong><small>hari</small></div>
+            <div class="kpi-card"><span class="label">🏖️ Cuti</span><strong id="kpiCuti">0</strong><small>hari</small></div>
+            <div class="kpi-card"><span class="label">⏰ Terlambat</span><strong id="kpiTerlambat">0</strong><small>kali</small></div>
+            <div class="kpi-card"><span class="label">🏠 LDP</span><strong id="kpiLdp">0</strong><small>kali</small></div>
+            <div class="kpi-card"><span class="label">⚠️ Kecelakaan Kerja</span><strong id="kpiKecelakaan">0</strong><small>kasus</small></div>
+            <div class="kpi-card"><span class="label">📢 Komplain</span><strong id="kpiKomplain">0</strong><small>kasus</small></div>
+            <div class="kpi-card"><span class="label">❌ Produk NG</span><strong id="kpiProdukNg">0</strong><small>kasus</small></div>
+            <div class="kpi-card"><span class="label">🕐 Lembur</span><strong id="kpiLembur">0</strong><small>jam</small></div>
+          </div>
+        </section>
+
+        <section id="kaizenPanel" class="view-panel kpi-page hidden"><button id="backKpi" class="back-btn">← KPI</button><h3>Daftar Kaizen</h3><div id="kaizenList"></div></section>
+        <section id="kaizenDetailPanel" class="view-panel kpi-page hidden"><button id="backKaizen" class="back-btn">← Kaizen</button><div class="detail-card"><h3 id="detailTitle">-</h3><p><b>Tanggal</b><br><span id="detailDate">-</span></p><p><b>Kategori</b><br><span id="detailCategory">-</span></p><p><b>Status</b><br><span id="detailStatus">-</span></p><p><b>Deskripsi</b><br><span id="detailDescription">-</span></p></div></section>
+
+        <section id="adminPanel" class="view-panel kpi-page hidden">
+          <div class="page-title"><h3>Admin KPI</h3></div>
+          <div class="admin-card"><form id="kpiAdminForm" class="admin-form"><label>Pilih User<select id="adminUserId" required><option value="">Memuat daftar user...</option></select></label><label>Periode<input id="adminPeriod" type="month" required></label><div class="admin-grid">
+            <label>Alpha<input id="adminAlpha" type="number" min="0" value="0"></label><label>Cuti<input id="adminCuti" type="number" min="0" value="0"></label><label>Terlambat<input id="adminTerlambat" type="number" min="0" value="0"></label><label>LDP<input id="adminLdp" type="number" min="0" value="0"></label><label>Kecelakaan Kerja<input id="adminKecelakaan" type="number" min="0" value="0"></label><label>Komplain<input id="adminKomplain" type="number" min="0" value="0"></label><label>Produk NG<input id="adminProdukNg" type="number" min="0" value="0"></label><label>Lembur (jam)<input id="adminLembur" type="number" min="0" step="0.5" value="0"></label></div><button class="primary-btn" type="submit">Simpan KPI</button><div id="adminKpiStatus" class="status"></div></form></div>
+          <div class="admin-card"><h4>Tambah Kaizen</h4><form id="kaizenAdminForm" class="admin-form"><label>Pilih User<select id="kaizenUserId" required><option value="">Memuat daftar user...</option></select></label><label>Tanggal<input id="kaizenDate" type="date" required></label><label>Judul<input id="kaizenTitle" required></label><label>Kategori<input id="kaizenCategory" placeholder="Safety / Quality / Productivity"></label><label>Status<select id="kaizenStatus"><option>Approved</option><option>Submitted</option><option>Rejected</option></select></label><label>Deskripsi<textarea id="kaizenDescription" rows="4"></textarea></label><button class="primary-btn" type="submit">Tambah Kaizen</button><div id="adminKaizenStatus" class="status"></div></form></div>
+        </section>
+      </div>
+
+      <nav class="bottom-nav"><button class="nav-btn active" data-view="chatPanel"><span>💬</span>Chat</button><button class="nav-btn" data-view="kpiPanel"><span>📊</span>KPI</button><button id="adminNav" class="nav-btn hidden" data-view="adminPanel"><span>⚙️</span>Admin</button></nav>
+    </section>
+  </main>
+
+  <script type="module" src="app.js?v=8.2"></script>
+</body>
+</html>
