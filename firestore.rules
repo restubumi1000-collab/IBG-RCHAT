@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() && (
+        request.auth.token.email == 'restubumi1000@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+    function myId() {
+      return request.auth.token.email == 'restubumi1000@gmail.com' ? 'restu' :
+             request.auth.token.email == 'susiyulianti130697@gmail.com' ? 'susi' :
+             request.auth.token.email.split('@')[0];
+    }
+    match /messages/{id} { allow read, create: if signedIn(); }
+    match /users/{uid} { allow read: if signedIn(); allow write: if isAdmin(); }
+    match /kpi/{id} { allow read: if signedIn() && (isAdmin() || resource.data.userId == myId()); allow create, update, delete: if isAdmin(); }
+    match /kaizen/{id} { allow read: if signedIn() && (isAdmin() || resource.data.userId == myId()); allow create, update, delete: if isAdmin(); }
+  }
+}
