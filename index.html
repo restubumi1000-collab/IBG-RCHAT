@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#078a72" />
+  <title>NICCA Connect+</title>
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="style.css?v=8.7" />
+</head>
+<body>
+  <main class="app-shell">
+    <section id="loginView" class="login-screen">
+      <div class="login-panel">
+        <div class="brand-lockup">
+          <img class="brand-logo" src="nicca-logo.png" alt="NICCA" />
+          <h1>NICCA Connect+</h1>
+          <p>Connect <span>•</span> Communicate <span>•</span> Collaborate</p>
+        </div>
+
+        <form id="loginForm" class="login-form">
+          <label class="field">
+            <span class="field-icon">●</span>
+            <input id="userId" type="text" autocomplete="username" placeholder="User ID" required />
+          </label>
+
+          <label class="field">
+            <span class="field-icon lock">▣</span>
+            <input id="password" type="password" autocomplete="current-password" placeholder="Password" required />
+            <button id="togglePassword" class="eye-btn" type="button" aria-label="Tampilkan password">◉</button>
+          </label>
+
+          <button class="login-btn" type="submit">
+            <span class="login-arrow">↪</span>
+            LOGIN
+          </button>
+
+          <p id="loginError" class="error"></p>
+
+          <div class="secure-note">
+            <div><span></span> Secure Login <span></span></div>
+            <p>◆ &nbsp; Encrypted & Secure</p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="chatView" class="chat-card hidden">
+      <header class="app-header">
+        <div class="header-brand"><img src="nicca-logo.png" alt="" /><div><h2>NICCA Connect+</h2><p>Connect • Communicate • Collaborate</p></div></div>
+        <button id="logoutBtn" class="icon-button" type="button" aria-label="Logout">↪</button>
+      </header>
+
+      <div class="app-content">
+        <section id="chatPanel" class="view-panel">
+          <section class="room-header"><div class="room-icon">👥</div><div class="room-copy"><h3>General Chat</h3><p><span class="online-dot"></span><span id="currentUserLabel">Online</span></p></div><div class="room-info">ⓘ</div></section>
+          <div id="messages" class="messages"></div>
+          <form id="messageForm" class="message-form"><button class="composer-icon" type="button">☺</button><input id="messageInput" type="text" maxlength="1000" autocomplete="off" placeholder="Type a message..." required /><button class="composer-icon attachment-button" type="button">⌕</button><button class="send-button" type="submit">➤</button></form>
+        </section>
+
+        <section id="kpiPanel" class="view-panel kpi-page hidden">
+          <div class="page-title"><div><h3>My KPI</h3><div id="kpiAsOf" class="muted">Total sampai hari ini</div></div></div>
+          <div class="kpi-grid">
+            <button id="kaizenCard" class="kpi-card clickable"><span class="label">💡 Kaizen</span><strong id="kpiKaizen">0</strong><small>Lihat histori ›</small></button>
+            <button class="kpi-card clickable history-card" data-history-type="alpha"><span class="label">🚫 Alpha</span><strong id="kpiAlpha">0</strong><small>hari • lihat histori ›</small></button>
+            <button class="kpi-card clickable history-card" data-history-type="cuti"><span class="label">🏖️ Cuti</span><strong id="kpiCuti">0</strong><small>hari • lihat histori ›</small></button>
+            <button class="kpi-card clickable history-card" data-history-type="terlambat"><span class="label">⏰ Terlambat</span><strong id="kpiTerlambat">0</strong><small>kali • lihat histori ›</small></button>
+            <button class="kpi-card clickable history-card" data-history-type="ldp"><span class="label">🏠 LDP</span><strong id="kpiLdp">0</strong><small>kali • lihat histori ›</small></button>
+            <button class="kpi-card clickable history-card" data-history-type="kecelakaanKerja"><span class="label">⚠️ Kecelakaan Kerja</span><strong id="kpiKecelakaan">0</strong><small>kasus • lihat histori ›</small></button>
+            <button class="kpi-card clickable history-card" data-history-type="komplain"><span class="label">📢 Komplain</span><strong id="kpiKomplain">0</strong><small>kasus • lihat histori ›</small></button>
+            <button class="kpi-card clickable history-card" data-history-type="produkNG"><span class="label">❌ Produk NG</span><strong id="kpiProdukNg">0</strong><small>kasus • lihat histori ›</small></button>
+            <button class="kpi-card clickable history-card" data-history-type="lembur"><span class="label">🕐 Lembur</span><strong id="kpiLembur">0</strong><small>jam • lihat histori ›</small></button>
+          </div>
+        </section>
+
+
+        <section id="historyPanel" class="view-panel kpi-page hidden">
+          <button id="backHistoryKpi" class="back-btn">← KPI</button>
+          <div class="page-title history-title"><div><h3 id="historyTitle">Riwayat KPI</h3><div id="historySummary" class="muted"></div></div></div>
+          <div id="historyList"></div>
+        </section>
+
+        <section id="kaizenPanel" class="view-panel kpi-page hidden"><button id="backKpi" class="back-btn">← KPI</button><h3>Daftar Kaizen</h3><div id="kaizenList"></div></section>
+        <section id="kaizenDetailPanel" class="view-panel kpi-page hidden"><button id="backKaizen" class="back-btn">← Kaizen</button><div class="detail-card"><h3 id="detailTitle">-</h3><p><b>Tanggal</b><br><span id="detailDate">-</span></p><p><b>Kategori</b><br><span id="detailCategory">-</span></p><p><b>Status</b><br><span id="detailStatus">-</span></p><p><b>Deskripsi</b><br><span id="detailDescription">-</span></p></div></section>
+
+        <section id="adminPanel" class="view-panel kpi-page hidden">
+          <div class="page-title"><div><h3>Admin KPI History</h3><div class="muted">Tambah kejadian berdasarkan tanggal. Total user dihitung otomatis.</div></div></div>
+
+          <div class="admin-card">
+            <h4 id="historyFormTitle">Tambah Riwayat KPI</h4>
+            <form id="historyAdminForm" class="admin-form">
+              <label>Pilih User<select id="historyUserId" required><option value="">Memuat daftar user...</option></select></label>
+              <label>Jenis KPI<select id="historyType" required>
+                <option value="alpha">Alpha</option><option value="cuti">Cuti</option><option value="terlambat">Terlambat</option><option value="ldp">LDP</option><option value="kecelakaanKerja">Kecelakaan Kerja</option><option value="komplain">Komplain</option><option value="produkNG">Produk NG</option><option value="lembur">Lembur</option>
+              </select></label>
+              <div class="admin-grid">
+                <label>Tanggal<input id="historyDate" type="date" required></label>
+                <label>Jumlah (<span id="historyUnitLabel">hari</span>)<input id="historyValue" type="number" min="0" step="1" value="1" required></label>
+              </div>
+              <label>Keterangan<textarea id="historyNote" rows="3" placeholder="Opsional, contoh: terlambat 15 menit / cuti tahunan / nama produk NG"></textarea></label>
+              <div class="form-actions"><button id="saveHistoryBtn" class="primary-btn" type="submit">Simpan Riwayat</button><button id="cancelEditHistoryBtn" class="back-btn hidden" type="button">Batal Edit</button></div>
+              <div id="adminHistoryStatus" class="status"></div>
+            </form>
+          </div>
+
+          <div class="admin-card">
+            <div class="admin-history-head"><div><h4>Riwayat User</h4><div class="muted">Edit atau hapus jika ada salah input.</div></div><label class="month-filter">Filter Bulan<input id="historyMonthFilter" type="month"></label></div>
+            <div id="adminHistoryList"></div>
+          </div>
+
+          <div class="admin-card danger-zone">
+            <h4>Hapus Semua Riwayat User</h4>
+            <div class="muted">Menghapus seluruh data di KPI History milik user yang sedang dipilih. Kaizen dan akun user tidak ikut terhapus.</div>
+            <label class="delete-confirm-label">Ketik User ID untuk konfirmasi<input id="deleteHistoryConfirm" autocomplete="off" placeholder="contoh: restu"></label>
+            <button id="deleteAllHistoryBtn" class="danger-btn" type="button">🗑️ Hapus Semua Riwayat User</button>
+            <div id="deleteHistoryStatus" class="status"></div>
+          </div>
+
+          <div class="admin-card"><h4>Tambah Kaizen</h4><form id="kaizenAdminForm" class="admin-form"><label>Pilih User<select id="kaizenUserId" required><option value="">Memuat daftar user...</option></select></label><label>Tanggal<input id="kaizenDate" type="date" required></label><label>Judul<input id="kaizenTitle" required></label><label>Kategori<input id="kaizenCategory" placeholder="Safety / Quality / Productivity"></label><label>Status<select id="kaizenStatus"><option>Approved</option><option>Submitted</option><option>Rejected</option></select></label><label>Deskripsi<textarea id="kaizenDescription" rows="4"></textarea></label><button class="primary-btn" type="submit">Tambah Kaizen</button><div id="adminKaizenStatus" class="status"></div></form></div>
+        </section>
+      </div>
+
+      <nav class="bottom-nav"><button class="nav-btn active" data-view="chatPanel"><span>💬</span>Chat</button><button class="nav-btn" data-view="kpiPanel"><span>📊</span>KPI</button><button id="adminNav" class="nav-btn hidden" data-view="adminPanel"><span>⚙️</span>Admin</button></nav>
+    </section>
+  </main>
+
+  <script type="module" src="app.js?v=8.7"></script>
+</body>
+</html>
