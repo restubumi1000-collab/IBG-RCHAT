@@ -31,10 +31,6 @@ const LEGACY_USERS = {
   restu: {
     email: "restubumi1000@gmail.com",
     name: "Restu"
-  },
-  susi: {
-    email: "susiyulianti130697@gmail.com",
-    name: "Susi"
   }
 };
 
